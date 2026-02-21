@@ -33,3 +33,9 @@ idf.py -p /dev/ttyACM0 flash monitor
 ## Notes
 - Channel preference starts with channel 11 and falls back to all channels.
 - If pairing fails, run `idf.py -p /dev/ttyACM0 erase-flash flash`.
+
+## License
+This project source is licensed under the MIT License. See `LICENSE`.
+
+## Third-party components
+`espressif/esp-zigbee-lib` and `espressif/esp-zboss-lib` are resolved by ESP-IDF Component Manager from `main/idf_component.yml` and are not required to be committed in this repository. They keep their own upstream licenses.
