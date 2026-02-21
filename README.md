@@ -8,7 +8,7 @@ Minimal ESP-IDF Zigbee end-device for **Seeed XIAO ESP32-C6** + **SHTC3**.
   - Temperature (cluster `0x0402`)
   - Humidity (cluster `0x0405`)
 - Reporting interval: **30 seconds**
-- No external Zigbee2MQTT converter needed (standard clusters)
+- Includes external Zigbee2MQTT converter: `z2m_converter.js`
 
 ## Wiring (I2C)
 - XIAO GPIO6 -> SHTC3 SDA
@@ -17,18 +17,23 @@ Minimal ESP-IDF Zigbee end-device for **Seeed XIAO ESP32-C6** + **SHTC3**.
 - XIAO GND -> SHTC3 GND
 
 ## Build and flash
+Prerequisite: ESP-IDF is installed on your system.
+
 ```bash
-cd /home/nonya/gits/zigbee-sensor-temp
-source /home/nonya/gits/esp-idf/export.sh
+git clone https://github.com/twhite0011/zigbee-sensor-temp.git
+cd zigbee-sensor-temp
+source /path/to/esp-idf/export.sh
 idf.py set-target esp32c6
 idf.py build
 idf.py -p /dev/ttyACM0 flash monitor
 ```
 
-## Zigbee2MQTT pairing
-1. Enable `permit_join` in Zigbee2MQTT.
-2. Flash/reboot device.
-3. Wait for interview; device should expose temperature/humidity entities.
+## Zigbee2MQTT setup and pairing
+1. Configure Zigbee2MQTT to load `z2m_converter.js` as an external converter.
+2. Restart Zigbee2MQTT.
+3. Enable `permit_join` in Zigbee2MQTT.
+4. Flash/reboot device.
+5. Wait for interview; device should expose temperature and humidity entities.
 
 ## Notes
 - Channel preference starts with channel 11 and falls back to all channels.
