@@ -11,32 +11,51 @@ Minimal ESP-IDF Zigbee end-device for **Seeed XIAO ESP32-C6** + **SHTC3**.
 - Includes external Zigbee2MQTT converter: `z2m_converter.js`
 
 ## Wiring (I2C)
-- XIAO GPIO6 -> SHTC3 SDA
-- XIAO GPIO7 -> SHTC3 SCL
+- XIAO GPIO22 -> SHTC3 SDA
+- XIAO GPIO23 -> SHTC3 SCL
 - XIAO 3.3V -> SHTC3 VCC
 - XIAO GND -> SHTC3 GND
 
 ## Build and flash
-Prerequisite: ESP-IDF is installed on your system.
+Prerequisites:
+- ESP-IDF `v5.5.x` installed locally
+- Serial port access to `/dev/ttyACM0` (on Linux, user in `dialout`/`uucp`)
 
 ```bash
 git clone https://github.com/twhite0011/zigbee-sensor-temp.git
 cd zigbee-sensor-temp
-source /path/to/esp-idf/export.sh
+source ~/esp/esp-idf/export.sh
 idf.py set-target esp32c6
 idf.py build
 idf.py -p /dev/ttyACM0 flash monitor
 ```
 
+If monitor fails in a non-interactive shell, run:
+
+```bash
+source ~/esp/esp-idf/export.sh
+idf.py -p /dev/ttyACM0 flash
+idf.py -p /dev/ttyACM0 monitor
+```
+
 ## Zigbee2MQTT setup and pairing
-1. Configure Zigbee2MQTT to load `z2m_converter.js` as an external converter.
+1. Configure Zigbee2MQTT to load `z2m_converter.js` as an external converter in `configuration.yaml`:
+   ```yaml
+   external_converters:
+     - /path/to/zigbee-sensor-temp/z2m_converter.js
+   ```
 2. Restart Zigbee2MQTT.
 3. Enable `permit_join` in Zigbee2MQTT.
 4. Flash/reboot device.
 5. Wait for interview; device should expose temperature and humidity entities.
 
+Expected runtime logs after join:
+- `zigbee: Rejoined network PAN=... CH=... SHORT=...` (or joined network log)
+- `sensors: SHTC3: <temp> C, <humidity> %RH`
+- `zigbee: Reported temp=<temp> C humidity=<humidity> %`
+
 ## Notes
-- Channel preference starts with channel 11 and falls back to all channels.
+- Firmware currently uses Zigbee channel **11** only.
 - If pairing fails, run `idf.py -p /dev/ttyACM0 erase-flash flash`.
 
 ## License
